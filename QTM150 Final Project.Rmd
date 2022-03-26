@@ -1,0 +1,123 @@
+---
+title: "Final Project"
+author: "Ally Zeng, Eve Kennedy, Alexa McGrath, Manoela Dos Santos, Grant Thompson"
+date: "4/19/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+*
+**1**
+```{r}
+library(tidyverse)
+cabrides <-read.csv("~/Downloads/CAB_RIDES.csv")
+```
+_We are planning to use price as the response variable. The main explanatory variable we will use is distance. The categorical and third variable we will use is cab_type. For part B question 7 we will use the variable name to make the cab types we analyze even more specific. We will use ggplot to visualize the specific relationships between the variables and any unusual observations.We are interested to see whether Uber or Lyft is a better option when comparing distance and price, as well as cab_type and price. This will help us college students to decide the best way to get around the city.
+
+**2**
+```{r}
+summary(cabrides)
+summary(cabrides$price)
+hist(x = cabrides$price) 
+```
+The numerical response variable we are choosing is price. Our rationale is that we would like to see the relationship between distance and price and we want to see which type of cab would be cheapest for long distances_ 
+
+**3**
+```{r}
+cabrides2 <- filter(cabrides, price <= 80)
+summary(cabrides2$price)
+```
+
+_Our unusual observation is that there are several price values above $80. _
+
+**4**
+
+```{r}
+summary(cabrides$distance)
+hist(x = cabrides$distance)
+boxplot(x=cabrides$distance)
+
+```
+_We chose distance as our explanatory variable because there is a direct relationship between distance and price._
+
+**5**
+_There are no unusual observations that we need to exclude._
+
+**6**
+_We expect there will be a positive linear relationship between price and distance initially but a graph between the variables would not cross 0. Then the price will flatten out as the distances get larger. We expect there to be first be a linear relationship because price is usually proportional to distance/miles traveled. However, there is still a flat rate charged no matter the distance so the graph would not cross 0. The price would flatten out because in our experience there is not much difference between a 40-50 minute ride, but there is a significant difference between 10-20 minutes, for example._
+
+**7**
+```{r}
+ggplot(data = cabrides) + geom_smooth(aes(x = cabrides$distance, y = cabrides$price)) + labs(y = "Price", x = "x Distance", title = "Distance vs. Price for Cab Rides")
+
+```
+
+**8**
+_The graph matched our expectation because there is a steep positive linear relationship in the beginning then it flattens out as the distance increases. The graph also does not cross the 0 mark._
+
+**Part B**
+
+**1**
+_We chose cab_type as the second explanatory variable because we wanted to see which type was cheaper in comparison to their competitors_
+
+**2**
+```{r}
+cabrides %>% 
+  group_by(cab_type) %>%
+summarise(meanprice = mean(price, na.rm = T),
+          sdprice = sd(price, na.rm = T),
+          meandist = mean(distance, na.rm = T)) %>%
+arrange(meanprice)
+```
+
+**3**
+```{r}
+ggplot(data=cabrides) +
+  geom_point(mapping = aes (x = distance, y= price, color = cab_type))+
+  geom_smooth(mapping = aes (x=distance, y=price, color = cab_type))+
+  labs(x = "Distance", y = "Price", title = "Distance vs. Price by Cab Type", fill = "Cab Type")
+```
+
+**4**
+_Lyft is a little bit more expensive for most distances and it looks like Lyft and Uber are about the same once you get to over 6 miles. The graph is different because it is comparing the cab types and the line trends are also differently shaped._ 
+
+**5**
+_We excluded the geom_point line and specific values so we could see the trend line better. In the other plot it was difficult to see the trend lines and their differences._
+
+**6**
+```{r}
+ggplot(data=cabrides) +
+  geom_smooth(mapping = aes (x=distance, y=price, color = cab_type))+
+  labs(x = "Distance", y = "Price", title = "Distance vs. Price by Cab Type", fill = "Cab Type")
+```
+_ Here we can see the trend lines much more clearly.It is clear that uber has a smaller and more predictable price compared to Lyft rides.   
+
+**7**
+_We chose name for the fourth variable and substituted this for cab type. We thought it would be interesting to compare names within cab types to see which is the most worth it. We can show how premium cars or larger vans could potentially cost more money and have higher rates per distance than regular Ubers/Lyfts. Perhaps the most important comparison we want to see is which company is cheaper and has better value for both initial price and for value over distance. Knowing the answer to this will help us as college students maximize how we can spend our dollars for getting both short and longer rides._ 
+
+**8**
+```{r}
+cabrides %>% 
+  group_by(distance, name) %>%
+summarise(price)%>%
+arrange(price)
+
+ggplot(data=cabrides) +
+  geom_smooth(mapping = aes (x=distance, y=price, color = name))
+```
+_This plot has a lot more different lines so we can distinguish the price levels. Based on the graph it looks like Uberpool is a better choice for longer distance rides. There is a small price change as distance increases. On the other hand we see that Lux Black XL has the highest price per distance. 
+
+**9**
+_From this code, we compared the relationship between price and distance for cabs and came to the conclusion that there is a positive nearly linear relationship. This means that prices of cab rides increases proportionally to the distance of the cab. We also found in our data that Lyft’s are on average slightly more expensive than Uber’s are for the same price, indicating that Uber is the app with slightly better value. We also compared each variety of both services, and found which specific type of car was the most expensive. Shared would be the cheapest and Lux Black XL would be the most expensive._
+```{r pressure, echo=FALSE}
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
